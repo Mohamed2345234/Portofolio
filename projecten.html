@@ -30,6 +30,19 @@
       <h1>Projecten</h1>
       <p class="lead">Een overzicht van projecten waar ik aan nog werk.</p>
 
+      <div class="filters">
+        <label for="filter-categorie">Categorie</label>
+        <select id="filter-categorie">
+          <option value="alle">Alle projecten</option>
+          <option value="school">School</option>
+          <option value="persoonlijk">Persoonlijk</option>
+        </select>
+
+        <button type="button" id="sorteer-naam">Sorteer op naam (A–Z)</button>
+      </div>
+
+      <p id="aantal-projecten" class="meta" aria-live="polite"></p>
+
       <section class="card-grid" aria-label="Projectenlijst">
         <div
           id="projecten-lijst"

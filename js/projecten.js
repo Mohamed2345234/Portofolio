@@ -32,6 +32,13 @@ const projecten = [
 
 // De lege <section> waar de kaarten in komen
 const lijst = document.querySelector("#projecten-lijst");
+const filterSelect = document.querySelector("#filter-categorie");
+const sorteerKnop = document.querySelector("#sorteer-naam");
+const aantalTekst = document.querySelector("#aantal-projecten");
+
+// Wat de gebruiker op dit moment gekozen heeft
+let gekozenCategorie = "alle";
+let sorteerRichting = "geen"; // "geen", "az" of "za"
 
 // Maakt de <ul> met technieken van één project
 function maakTagLijst(technieken) {
@@ -74,4 +81,58 @@ function renderProjecten(lijstMetProjecten) {
   });
 }
 
-renderProjecten(projecten);
+// Geeft alleen de projecten van de gekozen categorie terug
+function filterOpCategorie(lijstMetProjecten, categorie) {
+  if (categorie === "alle") {
+    return lijstMetProjecten;
+  }
+  return lijstMetProjecten.filter((project) => project.categorie === categorie);
+}
+
+// Sorteert een kopie van de lijst op titel
+function sorteerOpNaam(lijstMetProjecten, richting) {
+  const kopie = [...lijstMetProjecten];
+
+  if (richting === "az") {
+    kopie.sort((a, b) => a.titel.localeCompare(b.titel));
+  } else if (richting === "za") {
+    kopie.sort((a, b) => b.titel.localeCompare(a.titel));
+  }
+
+  return kopie;
+}
+
+// Toont hoeveel projecten er zichtbaar zijn
+function toonAantal(aantal) {
+  aantalTekst.textContent =
+    aantal === 1 ? "1 project gevonden" : `${aantal} projecten gevonden`;
+}
+
+// Filtert, sorteert en rendert opnieuw
+function werkLijstBij() {
+  const gefilterd = filterOpCategorie(projecten, gekozenCategorie);
+  const gesorteerd = sorteerOpNaam(gefilterd, sorteerRichting);
+
+  renderProjecten(gesorteerd);
+  toonAantal(gesorteerd.length);
+}
+
+// Events: reageren op de gebruiker
+filterSelect.addEventListener("change", (event) => {
+  gekozenCategorie = event.target.value;
+  werkLijstBij();
+});
+
+sorteerKnop.addEventListener("click", () => {
+  sorteerRichting = sorteerRichting === "az" ? "za" : "az";
+
+  sorteerKnop.textContent =
+    sorteerRichting === "az"
+      ? "Sorteer op naam (Z–A)"
+      : "Sorteer op naam (A–Z)";
+
+  werkLijstBij();
+});
+
+// Eerste keer tonen bij het laden van de pagina
+werkLijstBij();
